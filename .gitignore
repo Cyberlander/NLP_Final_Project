@@ -25,3 +25,13 @@ hs_err_pid*
 #special for this project
 *.dat
 *.libsvm
+train_data_*.csv
+train.json
+test_data_*.csv
+final_project_3/src/main/resources/blog_entries/test_data_1000.csv
+final_project_3/src/main/resources/blog_entries/train_data_1000.csv
+blogtext.csv
+final_project_3/.project
+final_project_3/.classpath
+final_project_3/src/test/resources/model/
+test.json
