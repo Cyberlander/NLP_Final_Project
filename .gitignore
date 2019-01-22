@@ -35,3 +35,7 @@ final_project_3/.project
 final_project_3/.classpath
 final_project_3/src/test/resources/model/
 test.json
+final_project_3/src/test/resources/results/news.csv
+final_project_3/target/test-classes/model/outcome-lookup.txt
+final_project_3/target/test-classes/model/features-lookup.txt
+final_project_3/src/test/resources/results/news.csv_eval_*
