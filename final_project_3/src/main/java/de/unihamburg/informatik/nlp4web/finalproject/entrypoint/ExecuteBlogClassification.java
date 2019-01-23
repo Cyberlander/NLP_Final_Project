@@ -101,7 +101,7 @@ public class ExecuteBlogClassification {
         
         String resltPath = "src/test/resources/results/";
         new File(resltPath).mkdirs();
-        File resultDir = new File(resltPath+"news.csv");
+        File resultDir = new File(resltPath+"blogEntrys.csv");
 
         //File newsTrain = new File("src/main/resources/news/uci-news-aggregator.csv.train.small");
         //File newsTest = new File("src/main/resources/news/uci-news-aggregator.csv.test.small");

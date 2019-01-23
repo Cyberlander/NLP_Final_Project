@@ -19,7 +19,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.unihamburg.informatik.nlp4web.finalproject.feature.CountAnnotationExtractor;
 import de.unihamburg.informatik.nlp4web.finalproject.feature.DictionaryMappingExtractor;
-import de.unihamburg.informatik.nlp4web.finalproject.type.NewsAnnotation;
+import de.unihamburg.informatik.nlp4web.finalproject.type.BlogAnnotation;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +58,7 @@ public class BlogClassificationAnnotator extends CleartkAnnotator<String> {
     @ConfigurationParameter(name = PARAM_DIRECTORY_NAME,
             mandatory = false)
     private File modelOutputDir;
-    private CombinedExtractor1<NewsAnnotation> extractor;
+    private CombinedExtractor1<BlogAnnotation> extractor;
 
     public static URI createTokenTfIdfDataURI(File outputDirectoryName) {
         File f = new File(outputDirectoryName, TFIDF_EXTRACTOR_KEY + "_tfidf_extractor.dat");
@@ -75,7 +75,7 @@ public class BlogClassificationAnnotator extends CleartkAnnotator<String> {
         return f.toURI();
     }
 
-    List<FeatureExtractor1<NewsAnnotation>> features = new ArrayList<>();
+    List<FeatureExtractor1<BlogAnnotation>> features = new ArrayList<>();
 
 
 
@@ -88,13 +88,13 @@ public class BlogClassificationAnnotator extends CleartkAnnotator<String> {
         // add feature extractors
         try {
 
-            TfidfExtractor<String, NewsAnnotation> tfIdfExtractor = initTfIdfExtractor();
+            TfidfExtractor<String, BlogAnnotation> tfIdfExtractor = initTfIdfExtractor();
 
-            CentroidTfidfSimilarityExtractor<String, NewsAnnotation> simExtractor = initCentroidTfIdfSimilarityExtractor();
-            MinMaxNormalizationExtractor<String, NewsAnnotation> minmaxExtractor = initMinMaxExtractor();
+            CentroidTfidfSimilarityExtractor<String, BlogAnnotation> simExtractor = initCentroidTfIdfSimilarityExtractor();
+            MinMaxNormalizationExtractor<String, BlogAnnotation> minmaxExtractor = initMinMaxExtractor();
 
             /** Collecting all features in a CombinedExtractor1<T> **/
-            this.extractor = new CombinedExtractor1<NewsAnnotation>(
+            this.extractor = new CombinedExtractor1<BlogAnnotation>(
                     tfIdfExtractor,
                     simExtractor,
                     minmaxExtractor
@@ -106,13 +106,13 @@ public class BlogClassificationAnnotator extends CleartkAnnotator<String> {
 
     }
 
-    private TfidfExtractor<String, NewsAnnotation> initTfIdfExtractor() throws IOException {
-        CleartkExtractor<NewsAnnotation, Token> countsExtractor = new CleartkExtractor<NewsAnnotation, Token>(
+    private TfidfExtractor<String, BlogAnnotation> initTfIdfExtractor() throws IOException {
+        CleartkExtractor<BlogAnnotation, Token> countsExtractor = new CleartkExtractor<BlogAnnotation, Token>(
                 Token.class,
                 new CoveredTextExtractor<Token>(),
                 new CleartkExtractor.Count(new CleartkExtractor.Covered()));
 
-        TfidfExtractor<String, NewsAnnotation> tfIdfExtractor = new TfidfExtractor<String, NewsAnnotation>(
+        TfidfExtractor<String, BlogAnnotation> tfIdfExtractor = new TfidfExtractor<String, BlogAnnotation>(
                 BlogClassificationAnnotator.TFIDF_EXTRACTOR_KEY,
                 countsExtractor);
 
@@ -123,14 +123,14 @@ public class BlogClassificationAnnotator extends CleartkAnnotator<String> {
     }
 
 
-    private CentroidTfidfSimilarityExtractor<String, NewsAnnotation> initCentroidTfIdfSimilarityExtractor()
+    private CentroidTfidfSimilarityExtractor<String, BlogAnnotation> initCentroidTfIdfSimilarityExtractor()
             throws IOException {
-        CleartkExtractor<NewsAnnotation, Token> countsExtractor = new CleartkExtractor<NewsAnnotation, Token>(
+        CleartkExtractor<BlogAnnotation, Token> countsExtractor = new CleartkExtractor<BlogAnnotation, Token>(
                 Token.class,
                 new CoveredTextExtractor<Token>(),
                 new CleartkExtractor.Count(new CleartkExtractor.Covered()));
 
-        CentroidTfidfSimilarityExtractor<String, NewsAnnotation> simExtractor = new CentroidTfidfSimilarityExtractor<String, NewsAnnotation>(
+        CentroidTfidfSimilarityExtractor<String, BlogAnnotation> simExtractor = new CentroidTfidfSimilarityExtractor<String, BlogAnnotation>(
                 BlogClassificationAnnotator.CENTROID_TFIDF_SIM_EXTRACTOR_KEY,
                 countsExtractor);
 
@@ -141,14 +141,14 @@ public class BlogClassificationAnnotator extends CleartkAnnotator<String> {
     }
 
 
-    private MinMaxNormalizationExtractor<String, NewsAnnotation> initMinMaxExtractor()
+    private MinMaxNormalizationExtractor<String, BlogAnnotation> initMinMaxExtractor()
             throws IOException {
-        CombinedExtractor1<NewsAnnotation> featuresToNormalizeExtractor = new CombinedExtractor1<NewsAnnotation>(
-                new CountAnnotationExtractor<NewsAnnotation>(Sentence.class),
-                new CountAnnotationExtractor<NewsAnnotation>(Token.class),
-                new DictionaryMappingExtractor<NewsAnnotation>(Sentence.class));
+        CombinedExtractor1<BlogAnnotation> featuresToNormalizeExtractor = new CombinedExtractor1<BlogAnnotation>(
+                new CountAnnotationExtractor<BlogAnnotation>(Sentence.class),
+                new CountAnnotationExtractor<BlogAnnotation>(Token.class),
+                new DictionaryMappingExtractor<BlogAnnotation>(Sentence.class));
 
-        MinMaxNormalizationExtractor<String, NewsAnnotation> minmaxExtractor = new MinMaxNormalizationExtractor<String, NewsAnnotation>(
+        MinMaxNormalizationExtractor<String, BlogAnnotation> minmaxExtractor = new MinMaxNormalizationExtractor<String, BlogAnnotation>(
                 MINMAX_EXTRACTOR_KEY,
                 featuresToNormalizeExtractor);
 
@@ -170,7 +170,7 @@ public class BlogClassificationAnnotator extends CleartkAnnotator<String> {
     public void process(JCas jCas) throws AnalysisEngineProcessException {
 
         System.err.println("extracting");
-        for (NewsAnnotation news : select(jCas, NewsAnnotation.class)) {
+        for (BlogAnnotation news : select(jCas, BlogAnnotation.class)) {
             Instance<String> instance = new Instance<String>();
 
             instance.addAll(this.extractor.extract(jCas, news));
@@ -212,7 +212,7 @@ public class BlogClassificationAnnotator extends CleartkAnnotator<String> {
         System.err.println("tfIDF ...");
         /** Collect TF*IDF stats for computing tf*idf values on extracted tokens **/
         URI tfIdfDataURI = BlogClassificationAnnotator.createTokenTfIdfDataURI(outputDirectory);
-        TfidfExtractor<String, NewsAnnotation> extractor = new TfidfExtractor<String, NewsAnnotation>(
+        TfidfExtractor<String, BlogAnnotation> extractor = new TfidfExtractor<String, BlogAnnotation>(
                 BlogClassificationAnnotator.TFIDF_EXTRACTOR_KEY);
         extractor.train(instances);
         extractor.save(tfIdfDataURI);
@@ -221,7 +221,7 @@ public class BlogClassificationAnnotator extends CleartkAnnotator<String> {
          System.err.println("similarity to corpus centroid ...");
         /** Collect TF*IDF Centroid stats for computing similarity to corpus centroid **/
         URI tfIdfCentroidSimDataURI = BlogClassificationAnnotator.createIdfCentroidSimilarityDataURI(outputDirectory);
-        CentroidTfidfSimilarityExtractor<String, NewsAnnotation> simExtractor = new CentroidTfidfSimilarityExtractor<String, NewsAnnotation>(
+        CentroidTfidfSimilarityExtractor<String, BlogAnnotation> simExtractor = new CentroidTfidfSimilarityExtractor<String, BlogAnnotation>(
                 BlogClassificationAnnotator.CENTROID_TFIDF_SIM_EXTRACTOR_KEY);
         simExtractor.train(instances);
         simExtractor.save(tfIdfCentroidSimDataURI);
@@ -231,7 +231,7 @@ public class BlogClassificationAnnotator extends CleartkAnnotator<String> {
         System.err.println("MinMax stats for feature normalization ...");
         /** Collect MinMax stats for feature normalization **/
         URI minmaxDataURI = BlogClassificationAnnotator.createMinMaxDataURI(outputDirectory);
-        MinMaxNormalizationExtractor<String, NewsAnnotation> minmaxExtractor = new MinMaxNormalizationExtractor<String, NewsAnnotation>(
+        MinMaxNormalizationExtractor<String, BlogAnnotation> minmaxExtractor = new MinMaxNormalizationExtractor<String, BlogAnnotation>(
                 BlogClassificationAnnotator.MINMAX_EXTRACTOR_KEY);
         minmaxExtractor.train(instances);
         minmaxExtractor.save(minmaxDataURI);

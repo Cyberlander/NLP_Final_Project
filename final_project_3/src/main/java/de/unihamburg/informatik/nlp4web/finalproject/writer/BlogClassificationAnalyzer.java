@@ -9,7 +9,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
-import de.unihamburg.informatik.nlp4web.finalproject.type.NewsAnnotation;
+import de.unihamburg.informatik.nlp4web.finalproject.type.BlogAnnotation;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -26,7 +26,7 @@ public class BlogClassificationAnalyzer extends JCasAnnotator_ImplBase {
     public static final String PARAM_OUTPUT_DIR = "InputFile";
 
     @ConfigurationParameter(name = PARAM_OUTPUT_DIR, mandatory = true)
-    private String outputDir;
+	private String outputDir;
 
     @Override
     public void process(JCas jCas) throws AnalysisEngineProcessException {
@@ -38,17 +38,17 @@ public class BlogClassificationAnalyzer extends JCasAnnotator_ImplBase {
     	try {
     		FileOutputStream result = new FileOutputStream(outputDir);
     		IOUtils.write("TITLE\tGOLD\tPREDICTED\n", result,"UTF-8");
-	    	for (NewsAnnotation news : select(jCas, NewsAnnotation.class)) {
+	    	for (BlogAnnotation blogEntry : select(jCas, BlogAnnotation.class)) {
 	
-		    	String predicted = news.getPredictValue();
+		    	String predicted = blogEntry.getPredictValue();
 		    	actualLabels.add(predicted);
-		    	String gold = news.getGoldValue();
+		    	String gold = blogEntry.getGoldValue();
 		    	expectedLabels.add(gold);
 		    	if (predicted.equals(gold)) {
 		    		corr++;
 		    	}
 		    		tot++;
-		    	IOUtils.write(news.getTitle() +"\t"+ gold +"\t"+predicted+"\n", result,"UTF-8");
+				IOUtils.write(blogEntry.getText() +"\t"+ gold +"\t"+predicted+"\n", result,"UTF-8");
 	    	}
     	} catch (IOException e) {
     	// TODO Auto-generated catch block
@@ -56,7 +56,7 @@ public class BlogClassificationAnalyzer extends JCasAnnotator_ImplBase {
     	}
     	double acc = 100 * ((double) corr / tot);
 
-    	logger.log(Level.INFO, "Total news " + tot);
+    	logger.log(Level.INFO, "Total Blog Posts " + tot);
     	logger.log(Level.INFO, "Total correct classifications " + corr);
     	logger.log(Level.INFO, "Total incorrect classifications " + (tot - corr));
     	logger.log(Level.INFO, "Accuracy " + String.format("%1$,.2f", acc) + "%");    	
@@ -128,20 +128,37 @@ public class BlogClassificationAnalyzer extends JCasAnnotator_ImplBase {
     	//-------------- print confusion matrix -------------------
     	
     	StringBuilder sb = new StringBuilder("EVALUATION:\n");
-    	// header    	
+    	// header  
+    	int total=0;
+    	sb.append("Confusion Matrix:\n");
+    	sb.append("\tActual Class\n");
     	for(int i = 0; i < unique.size(); i++) {
         	sb.append("\t" + unique.get(i));
     	}
     	sb.append("\n");
+    	
+    	int [] samplesPerClass = new int[unique.size()];
     	
     	// matrix
     	for(int i = 0; i < unique.size(); i++) {
     		sb.append(unique.get(i) + "\t");
     		for(int j = 0; j < unique.size(); j++) {
     			sb.append(confusionMatrix[i][j] + "\t");
+    			total += confusionMatrix[i][j];
+    			samplesPerClass[j] += confusionMatrix[i][j];
     		}
     		sb.append("\n");
     	} 
+    	sb.append("________________________________\n");
+    	sb.append("total\t");
+    	for(int z = 0; z < samplesPerClass.length; z++) {
+    		sb.append(samplesPerClass[z] + "\t");
+    	}
+    	
+    	sb.append("\n");
+    	
+    	sb.append("Total predicted Samples: ");
+    	sb.append(total + "\n\n");
     	
     	// precision
     	sb.append("precision\t");

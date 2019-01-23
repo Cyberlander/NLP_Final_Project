@@ -19,7 +19,7 @@ import org.apache.uima.util.Logger;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import de.unihamburg.informatik.nlp4web.finalproject.type.NewsAnnotation;
+import de.unihamburg.informatik.nlp4web.finalproject.type.BlogAnnotation;
 
 /**
  * The processed news are formatted as
@@ -86,7 +86,7 @@ public class BlogReader extends JCasAnnotator_ImplBase {
         
         int idx = 0;
         Token token = null;
-        NewsAnnotation news = null;
+        BlogAnnotation news = null;
         String newsCategory;
         Sentence sentence = null;
 
@@ -107,7 +107,7 @@ public class BlogReader extends JCasAnnotator_ImplBase {
                 docText.append(tweet);
                 docText.append(" ");
                 
-                news = new NewsAnnotation(docView, idx, idx + tweet.length());
+                news = new BlogAnnotation(docView, idx, idx + tweet.length());
                 sentence = new Sentence(docView, idx, idx + tweet.length());
                 
                 String[] words = tweet.split("\\s+");
@@ -135,7 +135,7 @@ public class BlogReader extends JCasAnnotator_ImplBase {
                 idx += tweet.length();
                 news.setGoldValue(newsCategory);           
                 // we need the original title here
-                news.setTitle(tag[0]);
+                news.setText(tag[0]);
                 
 
                 news.addToIndexes();

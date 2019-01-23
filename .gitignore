@@ -39,3 +39,4 @@ final_project_3/src/test/resources/results/news.csv
 final_project_3/target/test-classes/model/outcome-lookup.txt
 final_project_3/target/test-classes/model/features-lookup.txt
 final_project_3/src/test/resources/results/news.csv_eval_*
+final_project_3/src/test/resources/results/
