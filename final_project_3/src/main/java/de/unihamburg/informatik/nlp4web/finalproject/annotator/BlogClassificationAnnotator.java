@@ -146,7 +146,13 @@ public class BlogClassificationAnnotator extends CleartkAnnotator<String> {
         CombinedExtractor1<BlogAnnotation> featuresToNormalizeExtractor = new CombinedExtractor1<BlogAnnotation>(
                 new CountAnnotationExtractor<BlogAnnotation>(Sentence.class),
                 new CountAnnotationExtractor<BlogAnnotation>(Token.class),
-                new DictionaryMappingExtractor<BlogAnnotation>(Sentence.class));
+                new DictionaryMappingExtractor<BlogAnnotation>(Sentence.class,0),
+                new DictionaryMappingExtractor<BlogAnnotation>(Sentence.class,1),
+                new DictionaryMappingExtractor<BlogAnnotation>(Sentence.class,2),
+                new DictionaryMappingExtractor<BlogAnnotation>(Sentence.class,3),
+                new DictionaryMappingExtractor<BlogAnnotation>(Sentence.class,4),
+                new DictionaryMappingExtractor<BlogAnnotation>(Sentence.class,5),
+                new DictionaryMappingExtractor<BlogAnnotation>(Sentence.class,6));
 
         MinMaxNormalizationExtractor<String, BlogAnnotation> minmaxExtractor = new MinMaxNormalizationExtractor<String, BlogAnnotation>(
                 MINMAX_EXTRACTOR_KEY,

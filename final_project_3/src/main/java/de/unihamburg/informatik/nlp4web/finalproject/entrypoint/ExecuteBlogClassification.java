@@ -2,6 +2,7 @@ package de.unihamburg.informatik.nlp4web.finalproject.entrypoint;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
+
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.testing.util.HideOutput;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -41,7 +42,7 @@ public class ExecuteBlogClassification {
                 createEngine(AnalysisEngineFactory.createEngineDescription(
                         BlogClassificationAnnotator.class,
                         BlogClassificationAnnotator.PARAM_IS_TRAINING, true,
-                        BlogClassificationAnnotator.PARAM_DIRECTORY_NAME, modelDirectory,
+                        BlogClassificationAnnotator.PARAM_DIRECTORY_NAME, modelDirectory, 
                         DefaultDataWriterFactory.PARAM_DATA_WRITER_CLASS_NAME,
                         InstanceDataWriter.class.getName(),
                         DirectoryDataWriterFactory.PARAM_OUTPUT_DIRECTORY,
